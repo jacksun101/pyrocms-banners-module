@@ -130,7 +130,7 @@ class Module_Banners extends Module
 	            'type' => 'datetime',
 	            'assign' => 'banners',
 	            // error occurred without input_type when create new banner, don't know why.
-	            'extra' => array('use_time' => 'yes', 'input_type' => 'datepicker'),	
+	            'extra' => array('use_time'=>'yes', 'storage'=>'unix', 'input_type'=>'datepicker'),	
 	            'required' => true,
 	            'unique' => false
 	        ),
@@ -140,7 +140,7 @@ class Module_Banners extends Module
 	            'namespace' => 'banner',
 	            'type' => 'datetime',
 	            'assign' => 'banners',
-	            'extra' => array('use_time' => 'yes', 'input_type' => 'datepicker'),
+	            'extra' => array('use_time'=>'yes', 'storage'=>'unix', 'input_type'=>'datepicker'),
 	            'required' => true,
 	            'unique' => false
 	        ),
@@ -150,7 +150,7 @@ class Module_Banners extends Module
                 'namespace' => 'banner',
                 'assign' => 'banners',
                 'type' => 'image',
-                'extra' => array('folder' => 3, 'allowed_types' => 'jpg|gif|png'),
+                'extra' => array('folder'=>3, 'allowed_types'=>'jpg|gif|png'),
                 'required' => true
             ),
             
@@ -161,7 +161,7 @@ class Module_Banners extends Module
                 'namespace' => 'banner',
                 'assign' => 'groups',
                 'type' => 'text',
-                'extra' => array('max_length' => 200),
+                'extra' => array('max_length'=>200),
                 'title_column' => true,
                 'required' => true,
                 'unique' => true

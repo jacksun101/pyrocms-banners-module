@@ -26,11 +26,46 @@ class Widget_Banners extends Widgets
      */
     public $fields = array(
         array(
-			'field' => 'html',
-			'label' => 'HTML',
+			'field' => 'group',
+			'label' => 'Group',
 			'rules' => 'required'
+        ),
+        array(
+			'field' => 'column',
+			'label' => 'Column',
+			'rules' => 'required'
+        ),
+        array(
+			'field' => 'delay',
+			'label' => 'Delay',
+			'rules' => 'numeric|required'
+        ),
+        array(
+			'field' => 'arrow',
+			'label' => 'Arrow',
+			'rules' => 'required'
+        ),
+        array(
+			'field' => 'width',
+			'label' => 'Width',
+			'rules' => 'numeric|required'
+        ),
+        array(
+			'field' => 'height',
+			'label' => 'Height',
+			'rules' => 'numeric|required'
         )
     );
+    
+	/**	
+	 * Constructor method
+	 */	
+	public function __construct()	
+	{
+		// Load the navigation model from the navigation module.	
+		//$this->load->model('banners/banners_m');
+        $this->load->driver('Streams');
+	}
  
     /**
      * the $options param is passed by the core Widget class.  If you have
@@ -39,24 +74,66 @@ class Widget_Banners extends Widgets
      */
     public function run($options)
     {
-		if (empty($options['html']))
+    	$params = array(
+    				'stream'	=> 'banners',
+    				'namespace'	=> 'banner',
+    				'order_by'	=> 'ordering_count',
+    				'sort'		=> 'asc',
+    				'where'		=> array(
+    						'`group` = ' . $options['group'],
+    						'`status` = 1', 
+    						'`start_date` < ' . time(), 
+    						'`end_date` > ' . time()
+    				)
+    			);
+    	
+        $entries = $this->streams->entries->get_entries($params);
+        
+        
+        //TODO need use cache
+        
+		/* if (empty($options['html']))
 		{
 			return array('output' => '');
 		}
 
 		// Store the feed items
-		return array('output' => $this->parser->parse_string($options['html'], NULL, TRUE));
+		return array('output' => $this->parser->parse_string($options['html'], NULL, TRUE)); */
+        
+        //var_dump($options); 
+        //var_dump($entries['entries']); exit;
+        
+        return array( 
+        		'banners'	=> $entries['entries'],
+        		'id'		=> $options['widget']['instance_id'],
+        		'options'	=> $options,
+        );
     }
  
     /**
      * form() is used to prepare/pass data to the widget admin form
      * data returned from this method will be available to views/form.php
      */
-    /* public function form()
+    public function form()
     {
-        $stuff = $this->db->get_stuff();
-        return array('stuff' => $stuff);
-    } */
+    	$params = array(
+    				'stream'	=> 'groups',
+    				'namespace'	=> 'banner',
+    				'order_by'	=> 'id',
+    				'sort'		=> 'asc'
+    			);
+    	
+        $entries = $this->streams->entries->get_entries($params);
+        
+        $groups = array();
+        
+        foreach ($entries['entries'] as $entry) 
+        {
+        	$groups[$entry['id']] = $entry['group_title'];
+        }
+        
+        return array('groups' => $groups);
+    }
  
     /**
      * save() is used to alter submited data before their insertion in database
